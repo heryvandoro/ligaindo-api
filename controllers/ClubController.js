@@ -51,8 +51,26 @@ router.get("/:club_name", async (req, res) => {
             let attack_box = section_facts.eq(0).find(".column__body>table>tbody");
             let defend_box = section_facts.eq(1).find(".column__body>table>tbody");
             let discipline_box = section_facts.eq(2).find(".column__body>table>tbody");
+            let player_box = $("table.table--classment>tbody>tr");
 
             let players = [];
+            player_box.each((index, player) => {
+                let slug = $(player).find("a").attr("href").split("/");
+                slug = slug[slug.length-1];
+                let player_data = {
+                    photo : $(player).find("td[data-th=Pemain]").find("img").attr("src"),
+                    number : parseInt($(player).find(".pl-number>span").text() || 0),
+                    name : $(player).find(".pl-info>span").eq(0).find("a").text(),
+                    position : $(player).find(".pl-info>span").eq(1).text(),
+                    country : $(player).find("td[data-th=Negara]").find("strong").text(),
+                    goal : parseInt($(player).find("td[data-th=Gol]").text() || 0),
+                    assist : parseInt($(player).find("td[data-th=Assist]").text() || 0),
+                    yellow_card : parseInt($(player).find("td[data-th='Kartu Kuning']").text() || 0),
+                    red_card : parseInt($(player).find("td[data-th='Kartu Merah']").text() || 0),
+                    detail_url : `${config.BASE_URL}/players/${slug}`
+                };
+                players.push(player_data);
+            });
 
             let club_data = {
                 name : $(".klub--name").text(),
